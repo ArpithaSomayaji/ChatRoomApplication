@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">ChatRoomApplication</string>
+    <string name="display_appname">Chat Room</string>
+    <string name="the_new_arpitha_chat_is_here">The new Arpitha Chat is here.</string>
+    <string name="connect_with_friends">Connect with Friends!</string>
+    <string name="changing_the_way_we">Changing the way we</string>
+    <string name="communicate">Communicate.</string>
+    <string name="sign_up">Sign-Up</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_image">CHANGE IMAGE</string>
+    <string name="change_status">CHANGE STATUS</string>
+    <string name="defualt_status">Hey There! I m using ChatRoom!</string>
+    <string name="update_status">UPDATE STATUS</string>
+    <string name="update_user_status">Update USer Status</string>
+    <string name="send_request">SEND REQUEST</string>
+    <string name="delete_request">DELETE REQUEST</string>
+    <string name="enter_message">Enter Message...</string>
+    <string name="name">Name</string>
+    <string name="status">Status</string>
+</resources>

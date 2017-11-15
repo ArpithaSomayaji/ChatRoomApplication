@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.arpithasomayaji.chatroomapplication">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/oval"
+        android:label="@string/display_appname"
+        android:roundIcon="@drawable/oval"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <service android:name=".FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <uses-permission android:name="android.permission.INTERNET" />
+
+        <activity android:name=".SplashScreen.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".WelcomeScreen.WelcomeScreen" />
+        <activity android:name=".HomeScreen.HomeScreen" />
+        <activity android:name=".RegisterScreen.Login.RegisterScreen" />
+        <activity android:name=".LoginScreen.LoginScreen" />
+        <activity
+            android:name=".AccountSettingsScreen.AccountSettingsScreen"
+            android:parentActivityName=".HomeScreen.HomeScreen" />
+        <activity
+            android:name=".ListUsers.ListUserScreen"
+            android:parentActivityName=".HomeScreen.HomeScreen" />
+        <activity
+            android:name=".UpdateStatusScreen.UpdateStatusScreen"
+            android:parentActivityName=".AccountSettingsScreen.AccountSettingsScreen" />
+        <activity
+            android:name=".UserProfileScreen.UserProfileScreen"
+            android:parentActivityName=".ListUsers.ListUserScreen">
+            <intent-filter>
+                <action android:name="com.arpithasomayaji.chatroomapplication_TARGET_NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ChatsScreen.ChatScreen"
+            android:parentActivityName=".HomeScreen.HomeScreen"></activity>
+    </application>
+
+</manifest>
