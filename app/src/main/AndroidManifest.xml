@@ -47,7 +47,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChatsScreen.ChatScreen"
-            android:parentActivityName=".HomeScreen.HomeScreen"></activity>
+            android:parentActivityName=".HomeScreen.HomeScreen"
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
 
 </manifest>

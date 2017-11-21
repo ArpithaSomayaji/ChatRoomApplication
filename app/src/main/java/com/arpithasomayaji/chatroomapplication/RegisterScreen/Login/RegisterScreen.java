@@ -7,12 +7,9 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.arpithasomayaji.chatroomapplication.FirebaseAuthService;
 import com.arpithasomayaji.chatroomapplication.HomeScreen.HomeScreen;
-import com.arpithasomayaji.chatroomapplication.LoginScreen.LoginScreen;
 import com.arpithasomayaji.chatroomapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 
 import javax.inject.Inject;
 
@@ -43,7 +40,7 @@ public class RegisterScreen extends AppCompatActivity implements RegisterContrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_screen);
-        firebaseAuthService=new FirebaseAuthService().Initialize();
+        firebaseAuthService=FirebaseAuth.getInstance();
 
         mRegProgress = new ProgressDialog(this);
         ButterKnife.inject(this);

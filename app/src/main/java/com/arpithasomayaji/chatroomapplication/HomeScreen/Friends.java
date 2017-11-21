@@ -1,4 +1,4 @@
-package com.arpithasomayaji.chatroomapplication.FriendsListScreen;
+package com.arpithasomayaji.chatroomapplication.HomeScreen;
 
 /**
  * Created by arpitha.somayaji on 11/14/2017.

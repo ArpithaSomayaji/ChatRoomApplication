@@ -1,13 +1,7 @@
 package com.arpithasomayaji.chatroomapplication.UserProfileScreen;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.Toast;
-
 import com.arpithasomayaji.chatroomapplication.BasePresenter;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +33,7 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
 
     private DatabaseReference rootRef;
 
-    private FirebaseUser current_user;
+    private FirebaseUser currentUser;
     private String current_state;
 
 
@@ -51,7 +45,7 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
         friendReqDatabase = FirebaseDatabase.getInstance().getReference().child("Friend_req");
         friendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
         notificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
-        current_user = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -82,7 +76,7 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
                 viewActions.setUserProfileName(display_name);
                 viewActions.setUserProfileStatus(display_status);
 
-                if(current_user.getUid().equals(user_id)){
+                if(currentUser.getUid().equals(user_id)){
 
                     viewActions.setInvisibleDeleteRequestButton();
                     viewActions.disableDeleteRequestButton();
@@ -93,7 +87,7 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
                 }
 
                 //--------------- FRIENDS LIST / REQUEST FEATURE -----
-                friendReqDatabase.child(current_user.getUid()).addValueEventListener(new ValueEventListener() {
+                friendReqDatabase.child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -120,7 +114,7 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
                         }
                             else {
 
-                            friendDatabase.child(current_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            friendDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -186,12 +180,12 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
             String newNotificationId = newNotificationref.getKey();
 
             HashMap<String, String> notificationData = new HashMap<>();
-            notificationData.put("from", current_user.getUid());
+            notificationData.put("from", currentUser.getUid());
             notificationData.put("type", "request");
 
             Map requestMap = new HashMap();
-            requestMap.put("Friend_req/" + current_user.getUid() + "/" + user_id + "/request_type", "sent");
-            requestMap.put("Friend_req/" + user_id + "/" + current_user.getUid() + "/request_type", "received");
+            requestMap.put("Friend_req/" + currentUser.getUid() + "/" + user_id + "/request_type", "sent");
+            requestMap.put("Friend_req/" + user_id + "/" + currentUser.getUid() + "/request_type", "received");
             requestMap.put("notifications/" + user_id + "/" + newNotificationId, notificationData);
 
             rootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
@@ -218,10 +212,10 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
 
 
         if(current_state.equals("req_sent")){
-            friendReqDatabase.child(current_user.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            friendReqDatabase.child(currentUser.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    friendReqDatabase.child(user_id).child(current_user.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    friendReqDatabase.child(user_id).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             viewActions.enableRequestButton();
@@ -243,12 +237,12 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
             final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
 
             Map friendsMap = new HashMap();
-            friendsMap.put("Friends/" + current_user.getUid() + "/" + user_id + "/date", currentDate);
-            friendsMap.put("Friends/" + user_id + "/"  + current_user.getUid() + "/date", currentDate);
+            friendsMap.put("Friends/" + currentUser.getUid() + "/" + user_id + "/date", currentDate);
+            friendsMap.put("Friends/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
 
 
-            friendsMap.put("Friend_req/" + current_user.getUid() + "/" + user_id, null);
-            friendsMap.put("Friend_req/" + user_id + "/" + current_user.getUid(), null);
+            friendsMap.put("Friend_req/" + currentUser.getUid() + "/" + user_id, null);
+            friendsMap.put("Friend_req/" + user_id + "/" + currentUser.getUid(), null);
 
             rootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
                 @Override
@@ -285,8 +279,8 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
         if(current_state.equals("friends")){
 
             Map unfriendMap = new HashMap();
-            unfriendMap.put("Friends/" + current_user.getUid() + "/" + user_id, null);
-            unfriendMap.put("Friends/" + user_id + "/" + current_user.getUid(), null);
+            unfriendMap.put("Friends/" + currentUser.getUid() + "/" + user_id, null);
+            unfriendMap.put("Friends/" + user_id + "/" + currentUser.getUid(), null);
 
             rootRef.updateChildren(unfriendMap, new DatabaseReference.CompletionListener() {
                 @Override

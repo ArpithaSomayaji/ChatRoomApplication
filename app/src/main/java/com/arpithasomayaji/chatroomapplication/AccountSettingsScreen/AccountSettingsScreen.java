@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.arpithasomayaji.chatroomapplication.FirebaseAuthService;
 import com.arpithasomayaji.chatroomapplication.R;
 import com.arpithasomayaji.chatroomapplication.UpdateStatusScreen.UpdateStatusScreen;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +49,7 @@ public class AccountSettingsScreen extends AppCompatActivity implements AccountS
         accountSettingsPresenter=new AccountSettingsPresenter(this);
         accountSettingsPresenter.bind(this);
 
-        firebaseAuthService=new FirebaseAuthService().Initialize();
+        firebaseAuthService=FirebaseAuth.getInstance();
 
         setSupportActionBar(account_settings_page_toolbar);
         getSupportActionBar().setTitle("Account Settings");

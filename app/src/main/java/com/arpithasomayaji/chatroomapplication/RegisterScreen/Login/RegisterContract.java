@@ -1,8 +1,5 @@
 package com.arpithasomayaji.chatroomapplication.RegisterScreen.Login;
 
-import android.app.ProgressDialog;
-
-import com.arpithasomayaji.chatroomapplication.FirebaseAuthService;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**

@@ -10,21 +10,20 @@ public interface HomeContract {
 
      interface UserActions{
 
-        public void isUserLoggedin(FirebaseAuth firebaseAuthService);
+        void isUserLoggedin();
+        void userLogout();
 
-
-         void userLogout(FirebaseAuth firebaseAuthService);
      }
 
 
      interface ViewActions{
-        public void navigateWelcomScreen();
-             public void logoutUser();
-         public void navigateAllUsers();
-         public void navigateAccountSettings();
-
-
-
+         void navigateWelcomScreen();
+         void logoutUser();
+         void navigateAllUsers();
+         void navigateAccountSettings();
+         void initializeFriendsList();
+         void navigateToUserProfile(String list_user_id);
+         void navigateToChatScreen(String listUserId, String list_user_id);
      }
 
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.arpithasomayaji.chatroomapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,14 +16,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Created by arpitha.somayaji on 11/15/2017.
  */
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+    FirebaseAuth  firebaseAuth;
+    String currentUserID;
+
+    public static final int MESSAGE_FROM_OTHERUSER = 0;
+
+    public static final int MESSAGE_FROM_ME = 1;
+
+    private int currentViewType;
 
     private List<Messages> messagesList;
     private DatabaseReference userDatabase;
@@ -30,65 +37,138 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public MessageAdapter(List<Messages> messagesList) {
 
         this.messagesList = messagesList;
-
+        firebaseAuth= FirebaseAuth.getInstance();
+        currentUserID = firebaseAuth.getCurrentUser().getUid();
     }
 
     @Override
-    public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.message_single_layout ,parent, false);
 
-        return new MessageViewHolder(v);
+
+        switch (viewType) {
+            case MESSAGE_FROM_OTHERUSER:
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.message_single_layout, viewGroup, false);
+                MessageViewHolder viewHolder = new MessageViewHolder(v);
+                return viewHolder;
+            case MESSAGE_FROM_ME:
+                View v1 = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.message_single_layout_me, viewGroup, false);
+                MessageViewHolderFrom viewHolder1 = new MessageViewHolderFrom(v1);
+                return viewHolder1;
+        }
+        return null;
 
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
         public TextView messageText;
-        public CircleImageView profileImage;
+
         public TextView displayName;
 
         public MessageViewHolder(View view) {
             super(view);
 
             messageText = (TextView) view.findViewById(R.id.message_text_layout);
-            profileImage = (CircleImageView) view.findViewById(R.id.message_profile_layout);
             displayName = (TextView) view.findViewById(R.id.name_text_layout);
 
         }
     }
 
+    public class MessageViewHolderFrom extends RecyclerView.ViewHolder {
+
+        public TextView messageText;
+
+        public TextView displayName;
+
+        public MessageViewHolderFrom(View view) {
+            super(view);
+
+            messageText = (TextView) view.findViewById(R.id.message_text_layout);
+            displayName = (TextView) view.findViewById(R.id.name_text_layout);
+
+        }
+    }
+
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int i) {
+
+
+
+        Messages singleMessage = messagesList.get(i);
+        String from_user = singleMessage.getFrom();
+
+        if(from_user==currentUserID){
+            final MessageViewHolder messageViewHolder=(MessageViewHolder) viewHolder;
+
+            userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+
+            userDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String name = dataSnapshot.child("name").getValue().toString();
+
+
+                    messageViewHolder.displayName.setText(name);
+
+                          }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            messageViewHolder.messageText.setText(singleMessage.getMessage());
+
+
+        }
+
+        else {
+            final MessageViewHolderFrom messageViewHolder=(MessageViewHolderFrom) viewHolder;
+
+            userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+
+            userDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String name = dataSnapshot.child("name").getValue().toString();
+                     messageViewHolder.displayName.setText(name);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            messageViewHolder.messageText.setText(singleMessage.getMessage());
+
+        }
+
+    }
+
     @Override
-    public void onBindViewHolder(final MessageViewHolder viewHolder, int i) {
+    public int getItemViewType(int position) {
 
-        Messages c = messagesList.get(i);
+        Messages singleMessage = messagesList.get(position);
 
-        String from_user = c.getFrom();
+        String from_user = singleMessage.getFrom();
 
-        userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+        if(from_user==currentUserID){
 
-        userDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            return MESSAGE_FROM_ME;
+        }
 
-                String name = dataSnapshot.child("name").getValue().toString();
-                // image = dataSnapshot.child("thumb_image").getValue().toString();
+        else {
+            return MESSAGE_FROM_OTHERUSER;
+        }
 
-                viewHolder.displayName.setText(name);
 
-               // Picasso.with(viewHolder.profileImage.getContext()).load(image)
-                        //.placeholder(R.drawable.default_avatar).into(viewHolder.profileImage);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        viewHolder.messageText.setText(c.getMessage());
 
     }
 

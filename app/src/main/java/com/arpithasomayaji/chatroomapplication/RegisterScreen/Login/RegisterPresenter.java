@@ -1,13 +1,8 @@
 package com.arpithasomayaji.chatroomapplication.RegisterScreen.Login;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.arpithasomayaji.chatroomapplication.BasePresenter;
-import com.arpithasomayaji.chatroomapplication.FirebaseAuthService;
 import com.arpithasomayaji.chatroomapplication.ValidationUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,7 +16,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.HashMap;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
-import static com.google.android.gms.internal.zzs.TAG;
 
 /**
  * Created by Arpitha.Somayaji on 11/8/2017.

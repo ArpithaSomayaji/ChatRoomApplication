@@ -112,12 +112,6 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
          chatScreenPresenter.getLastSeenStatus(chatUserID);
          chatScreenPresenter.loadMessages(chatUserID);
         chatScreenPresenter.lastSeenUpdates(chatUserID);
-
-
-
-
-
-
     }
 
     @Override
@@ -171,7 +165,7 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
     }
 
 
-    @OnClick(R.id.chat_add_btn)
+    @OnClick(R.id.chat_send_btn)
     public void sendMessage(){
     chatScreenPresenter.sendMessage(chatUserID,getChatMessage());
 
