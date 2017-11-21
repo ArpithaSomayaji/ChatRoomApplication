@@ -35,7 +35,7 @@ public class HomePresenter implements BasePresenter<HomeContract.ViewActions>,Ho
     @Override
     public void isUserLoggedin() {
 
-        FirebaseUser currentUser= firebaseAuthService.getCurrentUser();
+        FirebaseUser currentUser = firebaseAuthService.getCurrentUser();
 
         if(currentUser == null) {
             viewActions.navigateWelcomScreen();

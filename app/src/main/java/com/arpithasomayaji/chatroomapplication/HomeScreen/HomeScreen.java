@@ -35,7 +35,7 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
     private FirebaseAuth firebaseAuthService;
     private DatabaseReference database;
     private DatabaseReference friendsDatabase;
-    private String current_user_id;
+    private String currentUserId;
     private DatabaseReference usersDatabase;
 
 
@@ -134,23 +134,17 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
     @Override
     public void initializeFriendsList() {
 
-        current_user_id =  firebaseAuthService.getCurrentUser().getUid();
+        currentUserId =  firebaseAuthService.getCurrentUser().getUid();
         usersDatabase = database.child("Users");
-        friendsDatabase = database.child("Friends").child(current_user_id);
-
+        friendsDatabase = database.child("Friends").child(currentUserId);
 
         //Initialize- List
         friendsList.setHasFixedSize(true);
         friendsList.setLayoutManager(new LinearLayoutManager(this));
 
         //set up
-        FirebaseRecyclerAdapter<Friends, FriendsViewHolder> friendsRecyclerViewAdapter= setFirebaseRecyclerAdapter();
+        FirebaseRecyclerAdapter<Friends, FriendsViewHolder> friendsRecyclerViewAdapter= getFirebaseRecyclerAdapter(friendsDatabase,usersDatabase);
         friendsList.setAdapter(friendsRecyclerViewAdapter);
-
-
-
-
-
     }
 
     @Override
@@ -172,7 +166,7 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
 
     }
 
-    private FirebaseRecyclerAdapter<Friends,FriendsViewHolder> setFirebaseRecyclerAdapter() {
+    private FirebaseRecyclerAdapter<Friends,FriendsViewHolder> getFirebaseRecyclerAdapter(DatabaseReference friendsDatabase, final DatabaseReference users) {
         FirebaseRecyclerAdapter<Friends, FriendsViewHolder> friendsRecyclerViewAdapter = new FirebaseRecyclerAdapter<Friends,FriendsViewHolder>(
                 Friends.class,
                 R.layout.single_user_layout,
@@ -183,7 +177,7 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
             protected void populateViewHolder(final FriendsViewHolder viewHolder,final Friends model, int position) {
                 final String list_user_id = getRef(position).getKey();
 
-                usersDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
+                users.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
