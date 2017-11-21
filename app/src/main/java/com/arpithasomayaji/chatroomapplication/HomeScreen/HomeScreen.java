@@ -157,11 +157,13 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
     }
 
     @Override
-    public void navigateToChatScreen(String userName, String list_user_id) {
+    public void navigateToChatScreen(String friend_user_id, String friend_user_name ) {
 
         Intent chatIntent = new Intent(HomeScreen.this, ChatScreen.class);
-        chatIntent.putExtra("user_id", list_user_id);
-        chatIntent.putExtra("user_name", userName);
+        chatIntent.putExtra("friend_user_id", friend_user_id);
+        chatIntent.putExtra("friend_user_name", friend_user_name);
+        chatIntent.putExtra("current_user_id", currentUserId);
+
         startActivity(chatIntent);
 
     }

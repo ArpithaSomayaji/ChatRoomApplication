@@ -31,11 +31,11 @@ public class ChatScreenPresenter implements BasePresenter<ChatScreenContract.vie
 
     private DatabaseReference rootRef;
 
-    public ChatScreenPresenter(ChatScreenContract.viewActions viewActions) {
+    public ChatScreenPresenter(ChatScreenContract.viewActions viewActions, FirebaseAuth firebaseAuthService, DatabaseReference database, String currentUserID) {
         this.viewActions = checkNotNull(viewActions," Chat Screen View cannot be null!");
-        rootRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        currentUserId = auth.getCurrentUser().getUid();
+        rootRef = database;
+        auth =firebaseAuthService;
+        currentUserId = currentUserID;
     }
 
     @Override

@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.arpithasomayaji.chatroomapplication.GetTimeAgo;
 import com.arpithasomayaji.chatroomapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,33 +33,38 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
 
     @InjectView(R.id.chat_page_toolbar)
-    Toolbar chat_page_toolbar;
+    Toolbar chatPageToolbar;
 
     @InjectView(R.id.user_chats_view_recycler)
-    RecyclerView user_chats_view_recycler;
+    RecyclerView userChatsViewRecycler;
 
-    @InjectView(R.id.chat_add_btn)ImageButton chat_add_btn;
-    @InjectView(R.id.chat_message_view)EditText chat_message_view;
-    @InjectView(R.id.chat_send_btn)ImageButton chat_send_btn;
+    @InjectView(R.id.chat_add_btn)ImageButton chatAddButton;
+    @InjectView(R.id.chat_message_view)EditText chatMessageView;
+    @InjectView(R.id.chat_send_btn)ImageButton chatSendBtn;
 
     @InjectView(R.id.single_user_image)
-    CircleImageView single_user_image;
+    CircleImageView singleUserImage;
 
     @InjectView(R.id.appbar_username)
-    TextView appbar_username;
+    TextView appbarUsername;
 
 
     @InjectView(R.id.appbar_lastseen)
-    TextView appbar_lastseen;
+    TextView appbarLastseen;
 
-    private String chatUserName;
-    private String chatUserID;
+    private String friendUserName;
+    private String friendUserID;
+    private String currentUserID;
 
     @Inject
     ChatScreenPresenter chatScreenPresenter;
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayout;
     private MessageAdapter messageAdapter;
+
+    private FirebaseAuth firebaseAuthService;
+    private DatabaseReference database;
+
 
 
     @Override
@@ -65,27 +73,49 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
         setContentView(R.layout.activity_chat_screen);
 
 
-        //------------Get Name and ID from previous Intent------------
+        //---Firebase--
+        firebaseAuthService = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference();
 
-        chatUserName=getIntent().getStringExtra("user_name");
-        chatUserID=getIntent().getStringExtra("user_id");
+        //------------Get Name and ID from previous Intent------------
+        //TODO Handle App Proccess death
+        friendUserName =getIntent().getStringExtra("friend_user_name");
+        friendUserID =getIntent().getStringExtra("friend_user_id");
+        currentUserID=getIntent().getStringExtra("current_user_id");
 
         ButterKnife.inject(this);
 
         // -------------Presenter----------------------------------
-
-        chatScreenPresenter=new ChatScreenPresenter(this);
+        chatScreenPresenter=new ChatScreenPresenter(this,firebaseAuthService,database,currentUserID);
         chatScreenPresenter.bind(this);
 
+        initActionBar(friendUserName);
+        initChatList();
 
-        //---------------Custom Action Bar---------------
-        setSupportActionBar(chat_page_toolbar);
+        //--------------------Set USername and Last Seen Status----------------
+        chatScreenPresenter.getLastSeenStatus(friendUserID);
+        chatScreenPresenter.loadMessages(friendUserID);
+        chatScreenPresenter.lastSeenUpdates(friendUserID);
+
+
+    }
+
+    private void initChatList() {
+        messageAdapter = new MessageAdapter(messagesList);
+
+        linearLayout = new LinearLayoutManager(this);
+
+        userChatsViewRecycler.setHasFixedSize(true);
+        userChatsViewRecycler.setLayoutManager(linearLayout);
+        userChatsViewRecycler.setAdapter(messageAdapter);
+    }
+
+    private void initActionBar(String friendUserName) {
+        setSupportActionBar(chatPageToolbar);
         ActionBar actionBar = getSupportActionBar();
 
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
-
-
 
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -93,38 +123,20 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
         actionBar.setCustomView(action_bar_view);
 
-        //--------------Recycler View ---------------------------
-        messageAdapter = new MessageAdapter(messagesList);
-
-        linearLayout = new LinearLayoutManager(this);
-
-        user_chats_view_recycler.setHasFixedSize(true);
-        user_chats_view_recycler.setLayoutManager(linearLayout);
-
-        user_chats_view_recycler.setAdapter(messageAdapter);
-
-
-
-
-        //--------------------Set USername and Last Seen Status----------------
-
-         setAppBarTitle(chatUserName);
-         chatScreenPresenter.getLastSeenStatus(chatUserID);
-         chatScreenPresenter.loadMessages(chatUserID);
-        chatScreenPresenter.lastSeenUpdates(chatUserID);
+        setAppBarTitle(friendUserName);
     }
 
     @Override
     public void setAppBarTitle(String chatUserName) {
 
-        appbar_username.setText(chatUserName);
+        appbarUsername.setText(chatUserName);
 
 
     }
 
     @Override
     public void setLastSeen(String lastSeen) {
-        appbar_lastseen.setText(lastSeen);
+        appbarLastseen.setText(lastSeen);
 
     }
 
@@ -144,12 +156,12 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
     @Override
     public String getChatMessage() {
-        return chat_message_view.getText().toString();
+        return chatMessageView.getText().toString();
     }
 
     @Override
     public void setMessageFieldtoNull() {
-        chat_message_view.setText("");
+        chatMessageView.setText("");
     }
 
     @Override
@@ -167,7 +179,7 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
     @OnClick(R.id.chat_send_btn)
     public void sendMessage(){
-    chatScreenPresenter.sendMessage(chatUserID,getChatMessage());
+    chatScreenPresenter.sendMessage(friendUserID,getChatMessage());
 
 
 }

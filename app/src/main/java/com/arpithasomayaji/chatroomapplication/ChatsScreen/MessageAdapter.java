@@ -20,16 +20,13 @@ import java.util.List;
  * Created by arpitha.somayaji on 11/15/2017.
  */
 
-public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-
-    FirebaseAuth  firebaseAuth;
-    String currentUserID;
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int MESSAGE_FROM_OTHERUSER = 0;
-
     public static final int MESSAGE_FROM_ME = 1;
+    FirebaseAuth firebaseAuth;
+    String currentUserID;
 
-    private int currentViewType;
 
     private List<Messages> messagesList;
     private DatabaseReference userDatabase;
@@ -37,13 +34,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public MessageAdapter(List<Messages> messagesList) {
 
         this.messagesList = messagesList;
-        firebaseAuth= FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         currentUserID = firebaseAuth.getCurrentUser().getUid();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
 
 
         switch (viewType) {
@@ -55,11 +51,63 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case MESSAGE_FROM_ME:
                 View v1 = LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.message_single_layout_me, viewGroup, false);
-                MessageViewHolderFrom viewHolder1 = new MessageViewHolderFrom(v1);
+                MessageViewHolder viewHolder1 = new MessageViewHolder(v1);
                 return viewHolder1;
         }
         return null;
 
+    }
+
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int i) {
+        Messages singleMessage = messagesList.get(i);
+        String from_user = singleMessage.getFrom();
+
+            final MessageViewHolder messageViewHolder = (MessageViewHolder) viewHolder;
+
+            userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+
+            userDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String name = dataSnapshot.child("name").getValue().toString();
+
+
+                    messageViewHolder.displayName.setText(name);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            messageViewHolder.messageText.setText(singleMessage.getMessage());
+
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        Messages singleMessage = messagesList.get(position);
+
+        String fromUser = singleMessage.getFrom();
+
+        if (fromUser.equals(currentUserID.toString())) {
+
+            return MESSAGE_FROM_ME;
+        } else {
+            return MESSAGE_FROM_OTHERUSER;
+        }
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return messagesList.size();
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -76,107 +124,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         }
     }
-
-    public class MessageViewHolderFrom extends RecyclerView.ViewHolder {
-
-        public TextView messageText;
-
-        public TextView displayName;
-
-        public MessageViewHolderFrom(View view) {
-            super(view);
-
-            messageText = (TextView) view.findViewById(R.id.message_text_layout);
-            displayName = (TextView) view.findViewById(R.id.name_text_layout);
-
-        }
-    }
-
-    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int i) {
-
-
-
-        Messages singleMessage = messagesList.get(i);
-        String from_user = singleMessage.getFrom();
-
-        if(from_user==currentUserID){
-            final MessageViewHolder messageViewHolder=(MessageViewHolder) viewHolder;
-
-            userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
-
-            userDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    String name = dataSnapshot.child("name").getValue().toString();
-
-
-                    messageViewHolder.displayName.setText(name);
-
-                          }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            messageViewHolder.messageText.setText(singleMessage.getMessage());
-
-
-        }
-
-        else {
-            final MessageViewHolderFrom messageViewHolder=(MessageViewHolderFrom) viewHolder;
-
-            userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
-
-            userDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    String name = dataSnapshot.child("name").getValue().toString();
-                     messageViewHolder.displayName.setText(name);
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            messageViewHolder.messageText.setText(singleMessage.getMessage());
-
-        }
-
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-
-        Messages singleMessage = messagesList.get(position);
-
-        String from_user = singleMessage.getFrom();
-
-        if(from_user==currentUserID){
-
-            return MESSAGE_FROM_ME;
-        }
-
-        else {
-            return MESSAGE_FROM_OTHERUSER;
-        }
-
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return messagesList.size();
-    }
-
 
 
 }
