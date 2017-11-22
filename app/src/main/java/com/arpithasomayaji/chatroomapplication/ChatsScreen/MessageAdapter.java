@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.arpithasomayaji.chatroomapplication.GetTimeAgo;
 import com.arpithasomayaji.chatroomapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -62,8 +63,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Messages singleMessage = messagesList.get(i);
         String from_user = singleMessage.getFrom();
 
-            final MessageViewHolder messageViewHolder = (MessageViewHolder) viewHolder;
+        final MessageViewHolder messageViewHolder = (MessageViewHolder) viewHolder;
 
+
+        if (!from_user.equals(currentUserID.toString())) {
             userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
 
             userDatabase.addValueEventListener(new ValueEventListener() {
@@ -81,9 +84,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
+            });}
 
             messageViewHolder.messageText.setText(singleMessage.getMessage());
+          //  messageViewHolder.timeText.setText(GetTimeAgo());
 
 
     }
@@ -116,11 +120,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public TextView displayName;
 
+        public TextView timeText;
+
         public MessageViewHolder(View view) {
             super(view);
 
             messageText = (TextView) view.findViewById(R.id.message_text_layout);
             displayName = (TextView) view.findViewById(R.id.name_text_layout);
+            timeText=(TextView)view.findViewById(R.id.time_text_layout);
 
         }
     }

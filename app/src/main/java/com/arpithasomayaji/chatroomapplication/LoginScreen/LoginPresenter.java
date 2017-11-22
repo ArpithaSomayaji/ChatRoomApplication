@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
@@ -31,6 +32,7 @@ public class LoginPresenter  implements BasePresenter<LoginContract.ViewActions>
     public LoginPresenter(LoginContract.ViewActions viewActions) {
 
         this.viewActions = checkNotNull(viewActions, "Login View cannot be null!");
+        databaseRefrence= FirebaseDatabase.getInstance().getReference();
     }
 
 
@@ -104,18 +106,19 @@ public class LoginPresenter  implements BasePresenter<LoginContract.ViewActions>
                 if(task.isSuccessful()){
 
                    viewActions.dismissDialog();
-                    viewActions.navigateAfterLogin();
-//                    String current_user_id = firebaseAuthService.getCurrentUser().getUid();
-//                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
-//
-//                    databaseRefrence.child(current_user_id).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//
-//                           viewActions.navigateAfterLogin();
-//
-//                        }
-//                    });
+                   // viewActions.navigateAfterLogin();
+
+                    String current_user_id = firebaseAuthService.getCurrentUser().getUid();
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+                    databaseRefrence.child("Users").child(current_user_id).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                           viewActions.navigateAfterLogin();
+
+                        }
+                    });
 
 
 

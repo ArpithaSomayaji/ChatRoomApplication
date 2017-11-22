@@ -26,7 +26,7 @@ public interface ChatScreenContract {
 
        
         void lastSeenUpdates(String chatUserID);
-        void sendMessage(String chatUserID, String chatMessage);
+        void sendMessage(String chatUserID, String chatMessage,String friendUserName);
 
         void loadMessages(String chatUserID);
     }

@@ -126,47 +126,69 @@ public class ChatScreenPresenter implements BasePresenter<ChatScreenContract.vie
 
 
     @Override
-    public void sendMessage(String chatUserID, String chatMessage) {
+    public void sendMessage(String chatUserID, String chatMessage,String friendUserName) {
 
-         if(!TextUtils.isEmpty(chatMessage)) {
+        if (!TextUtils.isEmpty(chatMessage)) {
 
-             String current_user_ref = "messages/" + currentUserId + "/" + chatUserID;
-             String chat_user_ref = "messages/" + chatUserID + "/" + currentUserId;
+            String current_user_ref = "messages/" + currentUserId + "/" + chatUserID;
+            String chat_user_ref = "messages/" + chatUserID + "/" + currentUserId;
 
-             DatabaseReference user_message_push = rootRef.child("messages")
-                     .child(currentUserId).child(chatUserID).push();
+            DatabaseReference user_message_push = rootRef.child("messages")
+                    .child(currentUserId).child(chatUserID).push();
 
-             String push_id = user_message_push.getKey();
+            String push_id = user_message_push.getKey();
 
-             Map messageMap = new HashMap();
-             messageMap.put("message", chatMessage);
-             messageMap.put("seen", false);
-             messageMap.put("type", "text");
-             messageMap.put("time", ServerValue.TIMESTAMP);
-             messageMap.put("from", currentUserId);
+            Map messageMap = new HashMap();
+            messageMap.put("message", chatMessage);
+            messageMap.put("seen", false);
+            messageMap.put("type", "text");
+            messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from", currentUserId);
 
-             Map messageUserMap = new HashMap();
-             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
-             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+            Map messageUserMap = new HashMap();
+            messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+            messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
-             viewActions.setMessageFieldtoNull();
+            viewActions.setMessageFieldtoNull();
 
-             rootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                 @Override
-                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+            rootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
-                     if(databaseError != null){
+                    if (databaseError != null) {
 
-                         Log.d("CHAT_LOG", databaseError.getMessage().toString());
+                        Log.d("CHAT_LOG", databaseError.getMessage().toString());
 
-                     }
+                    }
 
-                 }
-             });
+                }
+            });
 
 
-         }
+            DatabaseReference newNotificationref = rootRef.child("notifications").child(chatUserID).push();
+            String newNotificationId = newNotificationref.getKey();
+            String toName= friendUserName;
+            HashMap<String, String> notificationData = new HashMap<>();
+            notificationData.put("from", currentUserId);
+            notificationData.put("type", "message");
+            notificationData.put("to",chatUserID);
+            notificationData.put("toName",toName);
+
+            Map requestMap = new HashMap();
+            requestMap.put("notifications/" + chatUserID + "/" + newNotificationId, notificationData);
+
+            rootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+
+                }
+
+            });
+        }
+
     }
+
 
     @Override
     public void loadMessages(String chatUserID) {
@@ -183,6 +205,9 @@ public class ChatScreenPresenter implements BasePresenter<ChatScreenContract.vie
 
                 viewActions.addToMessageList(message);
                 viewActions.adapterNotifyDatchanged();
+
+
+
 
             }
 

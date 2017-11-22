@@ -41,7 +41,8 @@
             android:name=".UserProfileScreen.UserProfileScreen"
             android:parentActivityName=".ListUsers.ListUserScreen">
             <intent-filter>
-                <action android:name="com.arpithasomayaji.chatroomapplication_TARGET_NOTIFICATION" />
+                <action android:name="com.arpithasomayaji.chatroomapplication_TARGET_NOTIFICATION"
+                    android:exported="true"/>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

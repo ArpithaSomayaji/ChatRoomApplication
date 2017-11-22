@@ -17,6 +17,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        android.os.Debug.waitForDebugger();
 
         String notification_title = remoteMessage.getNotification().getTitle();
         String notification_message = remoteMessage.getNotification().getBody();
@@ -25,14 +26,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         String from_user_id = remoteMessage.getData().get("from_user_id");
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.oval)
-                        .setContentTitle(notification_title)
-                        .setContentText(notification_message);
-
-
         Intent resultIntent = new Intent(click_action);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         resultIntent.putExtra("user_id", from_user_id);
 
 
@@ -41,13 +36,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         this,
                         0,
                         resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_ONE_SHOT
                 );
 
-        mBuilder.setContentIntent(resultPendingIntent);
-
-
-
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.oval)
+                        .setContentTitle(notification_title)
+                        .setContentText(notification_message)
+                        .setContentIntent(resultPendingIntent);
 
         int mNotificationId = (int) System.currentTimeMillis();
 

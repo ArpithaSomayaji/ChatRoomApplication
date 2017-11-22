@@ -104,6 +104,7 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
         messageAdapter = new MessageAdapter(messagesList);
 
         linearLayout = new LinearLayoutManager(this);
+        linearLayout.setStackFromEnd(true);
 
         userChatsViewRecycler.setHasFixedSize(true);
         userChatsViewRecycler.setLayoutManager(linearLayout);
@@ -174,12 +175,13 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
     public void adapterNotifyDatchanged() {
         messageAdapter.notifyDataSetChanged();
 
-    }
+        }
+
 
 
     @OnClick(R.id.chat_send_btn)
     public void sendMessage(){
-    chatScreenPresenter.sendMessage(friendUserID,getChatMessage());
+    chatScreenPresenter.sendMessage(friendUserID,getChatMessage(),friendUserName);
 
 
 }
