@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/message_single_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:weightSum="10"
+    >
+
+
+    <TextView
+        android:id="@+id/message_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="0dp"
+        android:padding="15dp"
+        android:text="Message Text"
+        android:textColor="#444444"
+        android:textSize="14sp"
+        android:background="@drawable/bubble_in"
+        android:layout_below="@+id/name_text_layout"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/name_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="You"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        />
+    <TextView
+        android:id="@+id/time_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="00:00"
+        android:textColor="@color/common_google_signin_btn_text_light_focused"
+        android:textSize="8sp"
+        android:visibility="invisible"
+        android:layout_marginEnd="15dp"
+        android:layout_alignBaseline="@+id/message_text_layout"
+        android:layout_alignBottom="@+id/message_text_layout"
+        android:layout_toStartOf="@+id/message_text_layout" />
+
+
+
+
+
+</RelativeLayout>
