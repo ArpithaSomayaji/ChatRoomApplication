@@ -4,7 +4,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import com.arpithasomayaji.chatroomapplication.UserProfileScreen.UserProfileScreen;
 import com.google.firebase.messaging.RemoteMessage;
 
 /**
@@ -17,18 +19,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        android.os.Debug.waitForDebugger();
+        String notificationTitle = remoteMessage.getNotification().getTitle();
+        String notificationMessage = remoteMessage.getNotification().getBody();
 
-        String notification_title = remoteMessage.getNotification().getTitle();
-        String notification_message = remoteMessage.getNotification().getBody();
+        String clickAction = remoteMessage.getNotification().getClickAction();
 
-        String click_action = remoteMessage.getNotification().getClickAction();
-
-        String from_user_id = remoteMessage.getData().get("from_user_id");
-
-        Intent resultIntent = new Intent(click_action);
-        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        resultIntent.putExtra("user_id", from_user_id);
+        String fromUserId = remoteMessage.getData().get("from_user_id");
+        Intent resultIntent = new Intent(this, UserProfileScreen.class);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        resultIntent.putExtra("user_id", fromUserId);
+        resultIntent.setAction(fromUserId);
 
 
         PendingIntent resultPendingIntent =
@@ -36,22 +36,22 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         this,
                         0,
                         resultIntent,
-                        PendingIntent.FLAG_ONE_SHOT
+                        PendingIntent.FLAG_CANCEL_CURRENT
                 );
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.oval)
-                        .setContentTitle(notification_title)
-                        .setContentText(notification_message)
+                        .setContentTitle(notificationTitle)
+                        .setContentText(notificationMessage)
                         .setContentIntent(resultPendingIntent);
 
-        int mNotificationId = (int) System.currentTimeMillis();
+        int notificationId = (int) System.currentTimeMillis();
 
-        NotificationManager mNotifyMgr =
+        NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        notificationManager.notify(notificationId, mBuilder.build());
 
     }
 }

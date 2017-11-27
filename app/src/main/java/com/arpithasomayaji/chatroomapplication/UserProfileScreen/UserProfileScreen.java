@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class UserProfileScreen extends AppCompatActivity implements UserProfileC
         setSupportActionBar(user_profile_page_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getIntent();
         user_id = getIntent().getStringExtra("user_id");
         userProfilePresenter=new UserProfilePresenter(this);
         userProfilePresenter.bind(this);
