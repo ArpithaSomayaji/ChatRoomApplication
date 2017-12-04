@@ -1,6 +1,7 @@
 package com.arpithasomayaji.chatroomapplication.UserProfileScreen;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +36,7 @@ public class UserProfileScreen extends AppCompatActivity implements UserProfileC
 
     UserProfilePresenter userProfilePresenter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +46,14 @@ public class UserProfileScreen extends AppCompatActivity implements UserProfileC
         setSupportActionBar(user_profile_page_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getIntent();
-        user_id = getIntent().getStringExtra("user_id");
+        Bundle bundle = getIntent().getExtras();
+        // Handle possible data accompanying notification message.
+        if (bundle != null) {
+            user_id=bundle.getString("from_user_id").toString();
+        }
+
+
+
         userProfilePresenter=new UserProfilePresenter(this);
         userProfilePresenter.bind(this);
         getUserProfileData(user_id);

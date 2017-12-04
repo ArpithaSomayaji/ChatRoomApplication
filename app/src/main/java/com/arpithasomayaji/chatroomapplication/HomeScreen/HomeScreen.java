@@ -151,7 +151,7 @@ public class HomeScreen extends AppCompatActivity implements HomeContract.ViewAc
     public void navigateToUserProfile(String list_user_id) {
 
         Intent profileIntent = new Intent(HomeScreen.this, UserProfileScreen.class);
-        profileIntent.putExtra("user_id", list_user_id);
+        profileIntent.putExtra("from_user_id", list_user_id);
         startActivity(profileIntent);
 
     }

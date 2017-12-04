@@ -111,7 +111,7 @@ public class ListUserScreen extends AppCompatActivity   {
                     public void onClick(View view) {
 
                         Intent profileIntent = new Intent(ListUserScreen.this, UserProfileScreen.class);
-                        profileIntent.putExtra("user_id", user_id);
+                        profileIntent.putExtra("from_user_id", user_id);
                         startActivity(profileIntent);
 
                     }
