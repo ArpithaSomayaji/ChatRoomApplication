@@ -89,6 +89,13 @@ public class UserProfileScreen extends AppCompatActivity implements UserProfileC
 
     }
 
+    @OnClick(R.id.delete_request_button)
+    public void deleteRequestToUser()
+    {
+        userProfilePresenter.deleteRequesttoUser(user_id);
+
+    }
+
     @Override
     public void setUserProfileStatus(String display_status) {
         user_profile_status.setText(display_status);

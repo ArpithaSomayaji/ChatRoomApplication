@@ -317,4 +317,28 @@ public class UserProfilePresenter implements BasePresenter<UserProfileContract.v
 
 
     }
+
+    public void deleteRequesttoUser(final String user_id) {
+        if(current_state.equals("req_sent")){
+            friendReqDatabase.child(currentUser.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    friendReqDatabase.child(user_id).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            viewActions.enableRequestButton();
+                            current_state="not_friends";
+                            viewActions.changeTextRequestButton("SEND REQUEST");
+                            viewActions.setInvisibleDeleteRequestButton();
+                            viewActions.disableDeleteRequestButton();
+
+                        }
+                    });
+
+                }
+            });
+
+
+        }
+    }
 }

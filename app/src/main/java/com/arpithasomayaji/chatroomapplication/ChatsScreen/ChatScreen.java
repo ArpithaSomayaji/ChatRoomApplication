@@ -1,6 +1,7 @@
 package com.arpithasomayaji.chatroomapplication.ChatsScreen;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.arpithasomayaji.chatroomapplication.GetTimeAgo;
 import com.arpithasomayaji.chatroomapplication.R;
+import com.arpithasomayaji.chatroomapplication.UserProfileScreen.UserProfileScreen;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -79,9 +81,16 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
         //------------Get Name and ID from previous Intent------------
         //TODO Handle App Proccess death
-        friendUserName =getIntent().getStringExtra("friend_user_name");
-        friendUserID =getIntent().getStringExtra("friend_user_id");
-        currentUserID=getIntent().getStringExtra("current_user_id");
+
+        Bundle bundle = getIntent().getExtras();
+        // Handle possible data accompanying notification message.
+        if (bundle != null) {
+
+            friendUserName =getIntent().getStringExtra("friend_user_name");
+            friendUserID =getIntent().getStringExtra("from_user_id");
+            currentUserID=getIntent().getStringExtra("current_user_id");
+
+        }
 
         ButterKnife.inject(this);
 
@@ -186,6 +195,14 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
 }
 
+    @OnClick(R.id.chat_page_toolbar)
+    public void gotoUserProfile(){
+
+        Intent userProfileIntent = new Intent(this, UserProfileScreen.class);
+        userProfileIntent.putExtra("from_user_id", friendUserID);
+        startActivity(userProfileIntent);
+
+            }
 
 
 

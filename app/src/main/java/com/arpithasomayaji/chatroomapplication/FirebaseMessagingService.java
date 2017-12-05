@@ -30,19 +30,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         String clickAction = remoteMessage.getNotification().getClickAction();
 
-//        String fromUserId = remoteMessage.getData().get("from_user_id");
 
-//        String notificationTitle = data.get("title");
-//        String notificationMessage = data.get("message");
-//
-//        String clickAction = data.get("click_action");
 
         String fromUserId = data.get("from_user_id");
+        String toUserID = data.get("current_user_id");
+        String friendUserName= data.get("friend_user_name");
 
 
-        Intent resultIntent = new Intent(this, UserProfileScreen.class);
+        Intent resultIntent = new Intent(clickAction);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         resultIntent.putExtra("from_user_id", fromUserId);
+        resultIntent.putExtra("current_user_id",toUserID);
+        resultIntent.putExtra("friend_user_name",friendUserName);
         resultIntent.setAction(fromUserId);
 
         TaskStackBuilder taskStackBuilder=TaskStackBuilder.create(this);
