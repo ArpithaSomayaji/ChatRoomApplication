@@ -9,12 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.arpithasomayaji.chatroomapplication.GetTimeAgo;
+import com.arpithasomayaji.chatroomapplication.HomeScreen.HomeScreen;
 import com.arpithasomayaji.chatroomapplication.R;
 import com.arpithasomayaji.chatroomapplication.UserProfileScreen.UserProfileScreen;
 import com.google.firebase.auth.FirebaseAuth;
@@ -204,6 +206,20 @@ public class ChatScreen extends AppCompatActivity implements ChatScreenContract.
 
             }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, HomeScreen.class));
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
